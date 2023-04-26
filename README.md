@@ -1,6 +1,6 @@
 # TFShopBypass
 
-This Applications hide your switch identity on some switch shops.
+This Application hide your switch identity on some switch shops.
 
 1. go to discord and get a password
 2. set the password into the appsettings.json -> Password:
