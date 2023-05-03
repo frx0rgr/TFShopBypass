@@ -4,7 +4,6 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using TfShop.Models;
 using System.Security.Cryptography;
-using Microsoft.Extensions.Options;
 using System.Text.Json.Nodes;
 
 namespace TfShop.Controllers
@@ -51,7 +50,7 @@ namespace TfShop.Controllers
                 var json =  System.IO.File.ReadAllText(path);
                 var jsonObj = JsonSerializer.Deserialize<JsonObject>(json)!;
                 jsonObj["Shop"]["UID"] = this.shopConfiguration.UID;
-                string output = JsonSerializer.Serialize<dynamic>(jsonObj);
+                string output = JsonSerializer.Serialize<dynamic>(jsonObj, new JsonSerializerOptions { WriteIndented = true }); ;
                 System.IO.File.WriteAllText(path, output);
             }
             return this.shopConfiguration;
@@ -71,7 +70,7 @@ namespace TfShop.Controllers
                 {
                     builder.Append(bytes[i].ToString("x2"));
                 }
-                return builder.ToString();
+                return builder.ToString().ToUpper();
             }
         }
 
@@ -104,6 +103,8 @@ namespace TfShop.Controllers
             client.DefaultRequestHeaders.Add("UAUTH", shopConfiguration.UAUTH);
             client.DefaultRequestHeaders.Add("Theme", shopConfiguration.Theme);
             client.DefaultRequestHeaders.Add("Version", shopConfiguration.Version);
+            client.DefaultRequestHeaders.Add($"Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes(($"{shopConfiguration.UserName}:{shopConfiguration.Password}")))}");
+
             return client;
         }
         [HttpGet("FreeShop/GetFilesWithoutChange")]
